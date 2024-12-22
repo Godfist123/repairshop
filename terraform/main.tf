@@ -17,6 +17,7 @@ resource "aws_lambda_function" "nextjs_lambda" {
   image_uri     = "${var.docker_ecr_repo_url}:latest"
   memory_size   = 512
   timeout       = 10
+  depends_on    = [data.aws_iam_role.lambda_execution_role]
 }
 
 # API Gateway
