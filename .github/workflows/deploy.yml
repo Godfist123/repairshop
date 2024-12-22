@@ -26,11 +26,17 @@ jobs:
         run: |
           aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin ${{ secrets.ECR_URI }}
 
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
       # Step 4: Build Docker Image
       - name: Build and Push Docker Image
         run: |
-          docker build -t nextjs-app .
-          docker tag nextjs-app:latest ${{ secrets.ECR_URI }}:latest
+          docker build -t repairshop-nextjs .
+          docker tag repairshop-nextjs:latest ${{ secrets.ECR_URI }}:latest
           docker push ${{ secrets.ECR_URI }}:latest
 
       # Step 5: Install Terraform
