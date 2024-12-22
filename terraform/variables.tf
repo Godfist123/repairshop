@@ -11,7 +11,7 @@ variable "ecr_repository_name" {
 }
 
 variable "lambda_execution_role_name" {
-  default = "AWSReservedSSO_AdministratorAccess_71b324eb50afda30"
+  default = "repairshop-lambda-execution-role"
 }
 
 variable "docker_ecr_repo_url" {
