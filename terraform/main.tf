@@ -45,7 +45,4 @@ resource "aws_apigatewayv2_stage" "default_stage" {
   auto_deploy = true
 }
 
-# Output API Gateway URL
-output "api_gateway_url" {
-  value = aws_apigatewayv2_api.http_api.api_endpoint
-}
+
