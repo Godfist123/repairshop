@@ -1,0 +1,52 @@
+name: Deploy Next.js to AWS Lambda
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Configure AWS Credentials
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-southeast-2
+
+      # Step 3: Login to ECR
+      - name: Login to Amazon ECR
+        run: |
+          aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin ${{ secrets.ECR_URI }}
+
+      # Step 4: Build Docker Image
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t nextjs-app .
+          docker tag nextjs-app:latest ${{ secrets.ECR_URI }}:latest
+          docker push ${{ secrets.ECR_URI }}:latest
+
+      # Step 5: Install Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.3
+
+      # Step 6: Initialize Terraform
+      - name: Initialize Terraform
+        run: terraform init
+
+      # Step 7: Plan Terraform
+      - name: Plan Terraform
+        run: terraform plan
+
+      # Step 8: Apply Terraform
+      - name: Apply Terraform
+        run: terraform apply -auto-approve
