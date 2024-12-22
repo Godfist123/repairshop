@@ -37,7 +37,7 @@ jobs:
         run: |
           docker build -t repairshop-nextjs .
           docker tag repairshop-nextjs:latest ${{ secrets.ECR_URI }}/repairshop-nextjs:latest
-          docker push ${{ secrets.ECR_URI }}:latest
+          docker push ${{ secrets.ECR_URI }}/repairshop-nextjs:latest
 
       # Step 5: Install Terraform
       - name: Setup Terraform
