@@ -12,6 +12,7 @@ variable "ecr_repository_name" {
 
 variable "lambda_execution_role_name" {
   default = "repairshop-lambda-execution-role"
+
 }
 
 variable "docker_ecr_repo_url" {
