@@ -1,13 +1,24 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import pool from "@/lib/db";
+import { connectToDatabase } from "@/lib/db";
+import { AppDataSource } from "@/config/data-source";
+import { User } from "@/entities/User";
 
 export async function GET(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const client = await pool.connect();
-    const result = await client.query("SELECT NOW()");
-    client.release();
+    await connectToDatabase();
+    const userRepository = AppDataSource.getRepository(User);
 
-    return new Response(JSON.stringify({ time: result.rows[0] }), {
+    // Create a new user
+    const newUser = userRepository.create({
+      name: "John Doe",
+      email: "john@example.com",
+    });
+    await userRepository.save(newUser);
+
+    // Fetch all users
+    const users = await userRepository.find();
+
+    return new Response(JSON.stringify({ users }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });

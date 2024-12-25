@@ -1,14 +1,13 @@
-import { Pool } from "pg";
-import dotenv from "dotenv";
+import { AppDataSource } from "../config/data-source";
 
-dotenv.config();
-
-const pool = new Pool({
-  host: process.env.DATABASE_URL,
-  port: Number(process.env.DATABASE_PORT),
-  user: process.env.DATABASE_USER,
-  password: process.env.DATABASE_PASSWORD,
-  database: process.env.DATABASE_NAME,
-});
-
-export default pool;
+export const connectToDatabase = async () => {
+  try {
+    if (!AppDataSource.isInitialized) {
+      await AppDataSource.initialize();
+      console.log("Database connected successfully");
+    }
+  } catch (error) {
+    console.error("Error connecting to the database:", error);
+    throw error;
+  }
+};
