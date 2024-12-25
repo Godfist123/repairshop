@@ -1,5 +1,10 @@
+import "reflect-metadata";
 import { DataSource } from "typeorm";
-import { User } from "@/entities/User";
+import { Customers } from "@/entities/Customers";
+import { Tickets } from "@/entities/Tickets";
+
+import * as dotenv from "dotenv";
+dotenv.config();
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -8,9 +13,12 @@ export const AppDataSource = new DataSource({
   username: process.env.DATABASE_USER || "your-username",
   password: process.env.DATABASE_PASSWORD || "your-password",
   database: process.env.DATABASE_NAME || "your-database-name",
-  synchronize: true, // Set to `false` in production and use migrations
+  synchronize: false, // Set to `false` in production and use migrations
   logging: true,
-  entities: [User], // Path to entity files
-  migrations: ["src/migrations/**/*.{ts,js}"], // Path to migration files
-  subscribers: ["src/subscribers/**/*.{ts,js}"], // Optional: Path to subscribers
+  entities: [Customers, Tickets], // Path to entity files
+  migrations:
+    process.env.NODE_ENV === "production"
+      ? ["dist/src/migrations/*.{js}"] // Compiled migrations in production
+      : ["src/migrations/*.{ts}"],
+  subscribers: ["src/subscribers/*.{ts,js}"], // Optional: Path to subscribers
 });
